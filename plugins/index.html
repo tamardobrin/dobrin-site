@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>הפלאגינים שלי ל-Claude</title>
+<meta name="description" content="מדריך פשוט להתקנת פלאגינים ב-Claude: מוסיפים את החנות שלי פעם אחת, ומתקינים בלחיצה.">
+<meta property="og:title" content="הפלאגינים שלי ל-Claude">
+<meta property="og:description" content="מוסיפים את החנות שלי פעם אחת, ומתקינים כל פלאגין בלחיצה. בלי קוד ובלי טרמינל.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #faf8f5;
+    --card: #ffffff;
+    --ink: #222222;
+    --muted: #6b6560;
+    --line: #ebe6df;
+    --accent: #d97757;
+    --accent-ink: #ffffff;
+    --accent-soft: #fbeee8;
+    --code-bg: #f3efe9;
+    --shadow: 0 1px 2px rgba(34,34,34,.04), 0 8px 24px rgba(34,34,34,.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #181614; --card: #221f1c; --ink: #f2eee9; --muted: #a8a099; --line: #35302b;
+      --accent: #e08a6c; --accent-ink: #1a1512; --accent-soft: #3a2a23; --code-bg: #2b2723; --shadow: none;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #181614; --card: #221f1c; --ink: #f2eee9; --muted: #a8a099; --line: #35302b;
+    --accent: #e08a6c; --accent-ink: #1a1512; --accent-soft: #3a2a23; --code-bg: #2b2723; --shadow: none;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Rubik", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.65;
+  }
+  main { max-width: 640px; margin: 0 auto; padding: 40px 16px 56px; }
+
+  .home {
+    display: inline-block; margin-bottom: 28px;
+    direction: ltr; unicode-bidi: isolate;
+    font-weight: 700; font-size: 15px; letter-spacing: .02em;
+    color: var(--muted); text-decoration: none;
+  }
+  .home:hover { color: var(--ink); }
+  .home .ai { color: var(--accent); }
+  h1 {
+    font-weight: 900;
+    font-size: clamp(32px, 8vw, 46px);
+    line-height: 1.12;
+    margin: 0 0 12px;
+    letter-spacing: -0.01em;
+  }
+  .lead { color: var(--muted); font-size: 19px; margin: 0 0 28px; }
+  .en { direction: ltr; unicode-bidi: isolate; }
+
+  section { margin-top: 44px; }
+  h2 { font-size: 23px; font-weight: 700; margin: 0 0 16px; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+  }
+  .card p { margin: 0; }
+  .card p + p { margin-top: 8px; }
+
+  .addr {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--code-bg); border: 1px solid var(--line); border-radius: 14px;
+    padding: 10px 10px 10px 16px; padding-inline-start: 16px;
+  }
+  .addr code {
+    flex: 1; min-width: 0;
+    direction: ltr; text-align: left; unicode-bidi: isolate;
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 16px;
+    overflow-wrap: anywhere;
+  }
+  .download {
+    border: 0; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%;
+    padding: 18px 20px;
+    border-radius: 14px;
+    background: var(--accent); color: var(--accent-ink);
+    font-family: inherit; font-size: 19px; font-weight: 700;
+    text-decoration: none;
+    transition: transform .12s ease, filter .12s ease;
+    margin-top: 12px;
+  }
+  .download:hover { filter: brightness(1.05); }
+  .download:active { transform: scale(.985); }
+  .download svg { width: 22px; height: 22px; flex: none; }
+  .under { text-align: center; color: var(--muted); font-size: 14px; margin: 10px 0 0; }
+
+  ol.steps { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; counter-reset: s; }
+  ol.steps li {
+    counter-increment: s;
+    position: relative;
+    padding: 18px 20px;
+    padding-inline-start: 64px;
+  }
+  ol.steps li::before {
+    content: counter(s);
+    position: absolute; inset-inline-start: 18px; top: 18px;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--accent); color: var(--accent-ink);
+    display: grid; place-items: center;
+    font-weight: 700; font-size: 16px;
+  }
+  ol.steps strong { display: block; font-size: 18px; margin-bottom: 4px; }
+  ol.steps p { margin: 0; color: var(--muted); }
+  .ui {
+    direction: ltr; unicode-bidi: isolate;
+    font-weight: 500; color: var(--ink);
+    background: var(--code-bg); border-radius: 6px; padding: 1px 7px;
+    white-space: nowrap;
+  }
+
+  .plugins { display: grid; gap: 14px; }
+  .plugin h3 {
+    margin: 0 0 6px; font-size: 19px; font-weight: 700;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  }
+  .plugin h3 .name { direction: ltr; unicode-bidi: isolate; }
+  .plugin p { color: var(--muted); }
+  .tag {
+    font-size: 13px; font-weight: 500; line-height: 1.4;
+    border-radius: 999px; padding: 2px 10px;
+    border: 1px solid var(--line); color: var(--muted);
+  }
+  .tag.easy { background: var(--accent-soft); border-color: transparent; color: var(--accent); }
+  .group { font-size: 15px; font-weight: 500; color: var(--muted); margin: 26px 0 10px; }
+
+  .copybox { position: relative; margin-top: 12px; }
+  .copybox pre {
+    margin: 0;
+    background: var(--code-bg);
+    border-radius: 12px;
+    padding: 14px 16px 50px;
+    white-space: pre-wrap; word-break: break-word;
+    font-family: inherit; font-size: 15px; color: var(--ink);
+  }
+  .copybox pre.ltr { direction: ltr; text-align: left; font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 14px; }
+  .copy {
+    position: absolute; bottom: 10px; inset-inline-end: 10px;
+    font-family: inherit; font-size: 14px; font-weight: 500;
+    border: 1px solid var(--line); background: var(--card); color: var(--ink);
+    border-radius: 8px; padding: 6px 12px; cursor: pointer;
+  }
+  .addr .copy { position: static; flex: none; }
+  .copy.done { color: var(--accent); border-color: var(--accent); }
+
+  .note {
+    border-inline-start: 3px solid var(--accent);
+    background: var(--accent-soft);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 15px;
+    margin-top: 16px;
+  }
+  .note p { margin: 0; }
+
+  summary {
+    cursor: pointer; font-weight: 500; font-size: 18px;
+    list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary .chev { transition: transform .15s ease; color: var(--muted); }
+  details[open] summary .chev { transform: rotate(180deg); }
+  details .body { color: var(--muted); margin-top: 10px; }
+  details .body p { margin: 0 0 8px; }
+  details .body a { color: var(--accent); }
+
+  footer { margin-top: 48px; text-align: center; color: var(--muted); font-size: 14px; }
+  footer a { color: inherit; }
+</style>
+</head>
+<body>
+<main>
+
+  <a class="home" href="/">TAMAR DOBRIN | <span class="ai">AI</span></a>
+
+  <h1>הפלאגינים שלי ל-Claude</h1>
+  <p class="lead">מוסיפים את החנות שלי ל-Claude פעם אחת, ואז מתקינים כל פלאגין בלחיצה. בלי קוד ובלי טרמינל.</p>
+
+  <div class="card">
+    <p><strong>מה זה פלאגין?</strong></p>
+    <p style="color:var(--muted)">תוסף שמלמד את Claude לעשות משהו חדש, כמו אפליקציה שמתקינים בטלפון. מתקינים פעם אחת, ומאותו רגע הוא עובד בכל שיחה. לא צריך להעתיק פרומפטים בכל פעם.</p>
+  </div>
+
+  <section>
+    <h2>הכתובת של החנות</h2>
+    <div class="addr">
+      <code id="addr">tamardobrin/claude-plugins</code>
+      <button class="copy" data-target="addr" type="button">העתקה</button>
+    </div>
+    <p class="under">את זה מדביקים בשלב 3 למטה.</p>
+  </section>
+
+  <section>
+    <h2>איך מתקינים</h2>
+    <ol class="steps">
+      <li class="card">
+        <strong>פותחים את Claude</strong>
+        <p>באתר <span class="ui">claude.ai</span> או באפליקציה של Claude למחשב.</p>
+      </li>
+      <li class="card">
+        <strong>נכנסים לפלאגינים</strong>
+        <p>בתפריט שבצד: <span class="ui">Customize</span> ← <span class="ui">Plugins</span></p>
+      </li>
+      <li class="card">
+        <strong>מוסיפים את החנות שלי</strong>
+        <p>לוחצים <span class="ui">Add</span> ← <span class="ui">Add marketplace</span>, מדביקים את הכתובת שהעתקתם, ולוחצים <span class="ui">Add</span>. עושים את זה רק פעם אחת.</p>
+      </li>
+      <li class="card">
+        <strong>מתקינים פלאגין</strong>
+        <p>הפלאגינים שלי מופיעים ברשימה. בוחרים אחד ולוחצים <span class="ui">Install</span>.</p>
+      </li>
+      <li class="card">
+        <strong>משתמשים</strong>
+        <p>פותחים שיחה חדשה ופשוט מבקשים. Claude יודע לבד מתי להשתמש בפלאגין. יש דוגמאות לכל פלאגין למטה.</p>
+      </li>
+    </ol>
+    <div class="note"><p>לא רואים <span class="ui">Plugins</span> בתפריט? יש תשובה בשאלות למטה.</p></div>
+  </section>
+
+  <section>
+    <h2>הפלאגינים</h2>
+
+    <div class="group">לכולם</div>
+    <div class="plugins">
+      <div class="card plugin">
+        <h3><span class="name">eli5</span> <span class="tag easy">עובד מיד</span></h3>
+        <p>לא הבנתם תשובה של Claude? הוא מסביר אותה שוב במילים הכי פשוטות, כאילו אתם בני 5.</p>
+        <div class="copybox">
+          <pre id="ex1">לא הבנתי, תסביר לי את זה כמו לילד בן 5</pre>
+          <button class="copy" data-target="ex1" type="button">העתקה</button>
+        </div>
+      </div>
+
+      <div class="card plugin">
+        <h3><span class="name">seedance-higgsfield</span> <span class="tag easy">עובד מיד</span></h3>
+        <p>כותבים רעיון לסרטון בעברית, ומקבלים פרומפט מסודר ל-Seedance 2.5 שמוכן להדבקה ב-Higgsfield.</p>
+        <div class="copybox">
+          <pre id="ex2">תכתוב לי פרומפט ל-Seedance לסרטון של 10 שניות: חתולה אפורה יושבת על ספה ומסתכלת במבט שיפוטי על בקבוק וויסקי</pre>
+          <button class="copy" data-target="ex2" type="button">העתקה</button>
+        </div>
+        <p style="margin-top:10px;font-size:15px">כתיבת הפרומפט עובדת מיד. כדי ש-Claude גם ייצר את הסרטון ישירות ב-Higgsfield, צריך הגדרה טכנית נוספת (<a href="https://github.com/tamardobrin/claude-plugins/tree/main/plugins/seedance-higgsfield" target="_blank" rel="noopener" style="color:var(--accent)">מוסבר כאן</a>).</p>
+      </div>
+    </div>
+
+    <div class="group">ליוצרי וידאו (דורש התקנה במחשב)</div>
+    <div class="plugins">
+      <div class="card plugin">
+        <h3><span class="name">screen-tutorial-edit</span> <span class="tag">Claude Code</span></h3>
+        <p>עורך מדריך ל-YouTube מצילום שלכם ומהקלטת מסך: הפנים בעיגול מעל המסך, זומים על מה שאתם מדברים עליו, חיתוך שתיקות וטעויות, הסתרת פרטים אישיים, וכתוביות אם רוצים.</p>
+        <p style="margin-top:10px;font-size:15px">עובד רק ב-Claude Code במחשב (דורש מנוי בתשלום), וצריך התקנה חד-פעמית של כמה כלים. Claude מדריך אתכם בה.</p>
+      </div>
+    </div>
+
+    <div class="group">למפתחים</div>
+    <div class="plugins">
+      <div class="card plugin">
+        <h3><span class="name">cross-review</span> <span class="tag">Claude Code</span></h3>
+        <p>סקירת קוד על ידי מודל שני, עם בדיקה עצמאית של כל ממצא לפני שהוא מוצג.</p>
+      </div>
+      <div class="card plugin">
+        <h3><span class="name">repo-setup</span> <span class="tag">Claude Code</span></h3>
+        <p>מקים פרויקט שהורדתם מ-GitHub מאפס: קורא את התיעוד, מתקין, מגדיר ובודק שהכל רץ.</p>
+      </div>
+      <div class="card plugin">
+        <h3><span class="name">repo-to-notebooklm</span> <span class="tag">Claude Code</span></h3>
+        <p>הופך פרויקט קוד למסמך אחד קריא, להעלאה ל-NotebookLM.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>שאלות</h2>
+    <div class="card" style="display:grid;gap:18px">
+      <details>
+        <summary>אני לא רואה Plugins בתפריט <span class="chev" aria-hidden="true">⌄</span></summary>
+        <div class="body">
+          <p>כמה דברים לבדוק: שהאפליקציה מעודכנת לגרסה האחרונה, ושאתם מחוברים לחשבון הנכון. בחשבון של עבודה, מנהל החשבון יכול לחסום הוספה של חנויות, ואז צריך לבקש ממנו.</p>
+          <p>אם זה עדיין לא עובד ואתם רוצים רק את הפרומפטים ל-Seedance, יש דרך שעובדת בכל חשבון: <a href="/seedance/">פרומפט אחד שמעתיקים ל-Claude</a>.</p>
+        </div>
+      </details>
+      <details>
+        <summary>זה עולה כסף? <span class="chev" aria-hidden="true">⌄</span></summary>
+        <div class="body"><p>הפלאגינים שלי חינמיים. צריך חשבון Claude, ופלאגינים שמסומנים "Claude Code" דורשים מנוי בתשלום (Pro ומעלה). יצירת סרטונים ב-Higgsfield עולה קרדיטים שם.</p></div>
+      </details>
+      <details>
+        <summary>אני משתמש/ת ב-Claude Code <span class="chev" aria-hidden="true">⌄</span></summary>
+        <div class="body">
+          <p>מוסיפים את החנות ומתקינים עם הפקודות האלה (מחליפים את השם בשם של הפלאגין):</p>
+          <div class="copybox">
+            <pre class="ltr" id="cc">/plugin marketplace add tamardobrin/claude-plugins
+/plugin install eli5@tamardobrin-plugins</pre>
+            <button class="copy" data-target="cc" type="button">העתקה</button>
+          </div>
+          <p style="margin-top:10px">או פשוט מקלידים <span class="ui">/plugin</span> ובוחרים מהרשימה.</p>
+        </div>
+      </details>
+      <details>
+        <summary>איך מקבלים עדכונים? <span class="chev" aria-hidden="true">⌄</span></summary>
+        <div class="body"><p>פלאגינים מחנויות פרטיות לא מתעדכנים לבד. כשאני מעדכנת פלאגין, נכנסים לאותו מסך של הפלאגינים ומעדכנים את החנות. ב-Claude Code: <span class="ui">/plugin</span> ← <span class="ui">Marketplaces</span>, ושם אפשר גם להפעיל עדכון אוטומטי.</p></div>
+      </details>
+      <details>
+        <summary>זה בטוח? <span class="chev" aria-hidden="true">⌄</span></summary>
+        <div class="body"><p>פלאגין יכול לתת ל-Claude יכולות חדשות, וחלקם מריצים דברים במחשב. לכן כדאי להתקין רק מאנשים שסומכים עליהם. כל הפלאגינים שלי פתוחים לקריאה <a href="https://github.com/tamardobrin/claude-plugins" target="_blank" rel="noopener">ב-GitHub</a>.</p></div>
+      </details>
+    </div>
+  </section>
+
+  <footer>נהנים מהפלאגינים? ספרו לי מה יצרתם איתם 🎬</footer>
+
+</main>
+<script>
+  function copyText(text, onDone) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(onDone, fallback);
+    } else { fallback(); }
+    function fallback() {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); onDone(); } catch (e) {}
+      document.body.removeChild(ta);
+    }
+  }
+  document.querySelectorAll(".copy").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      copyText(document.getElementById(btn.dataset.target).textContent, function () {
+        btn.textContent = "הועתק ✓";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "העתקה"; btn.classList.remove("done"); }, 1800);
+      });
+    });
+  });
+</script>
+</body>
+</html>

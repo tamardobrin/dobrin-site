@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>סקיל לפרומפטים של Seedance</title>
+<meta name="description" content="פרומפט אחד שמעתיקים ל-Claude, והוא בונה לכם סקיל שהופך רעיון לסרטון לפרומפט מסודר ל-Seedance 2.5.">
+<meta property="og:title" content="סקיל לפרומפטים של Seedance">
+<meta property="og:description" content="כותבים רעיון לסרטון, מקבלים פרומפט מוכן ל-Higgsfield.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #faf8f5;
+    --card: #ffffff;
+    --ink: #222222;
+    --muted: #6b6560;
+    --line: #ebe6df;
+    --accent: #d97757;
+    --accent-ink: #ffffff;
+    --accent-soft: #fbeee8;
+    --code-bg: #f3efe9;
+    --shadow: 0 1px 2px rgba(34,34,34,.04), 0 8px 24px rgba(34,34,34,.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #181614;
+      --card: #221f1c;
+      --ink: #f2eee9;
+      --muted: #a8a099;
+      --line: #35302b;
+      --accent: #e08a6c;
+      --accent-ink: #1a1512;
+      --accent-soft: #3a2a23;
+      --code-bg: #2b2723;
+      --shadow: none;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #181614; --card: #221f1c; --ink: #f2eee9; --muted: #a8a099; --line: #35302b;
+    --accent: #e08a6c; --accent-ink: #1a1512; --accent-soft: #3a2a23; --code-bg: #2b2723; --shadow: none;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Rubik", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.65;
+  }
+  main { max-width: 640px; margin: 0 auto; padding: 40px 16px 56px; }
+
+  .home {
+    display: inline-block; margin-bottom: 28px;
+    direction: ltr; unicode-bidi: isolate;
+    font-weight: 700; font-size: 15px; letter-spacing: .02em;
+    color: var(--muted); text-decoration: none;
+  }
+  .home:hover { color: var(--ink); }
+  .home .ai { color: var(--accent); }
+  h1 {
+    font-weight: 900;
+    font-size: clamp(32px, 8vw, 46px);
+    line-height: 1.12;
+    margin: 0 0 12px;
+    letter-spacing: -0.01em;
+  }
+  h1 .en { direction: ltr; unicode-bidi: isolate; }
+  .lead { color: var(--muted); font-size: 19px; margin: 0 0 28px; }
+
+  .download {
+    border: 0; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%;
+    padding: 18px 20px;
+    border-radius: 14px;
+    background: var(--accent); color: var(--accent-ink);
+    font-family: inherit; font-size: 19px; font-weight: 700;
+    text-decoration: none;
+    transition: transform .12s ease, filter .12s ease;
+  }
+  .download:hover { filter: brightness(1.05); }
+  .download:active { transform: scale(.985); }
+  .download svg { width: 22px; height: 22px; flex: none; }
+  .under { text-align: center; color: var(--muted); font-size: 14px; margin: 10px 0 0; }
+
+  .promptbox {
+    position: relative; margin-top: 16px;
+    background: var(--code-bg); border: 1px solid var(--line); border-radius: 14px;
+    overflow: hidden;
+  }
+  .promptbox pre {
+    margin: 0; padding: 16px;
+    max-height: 168px; overflow: hidden;
+    white-space: pre-wrap; word-break: break-word;
+    direction: rtl; text-align: start; unicode-bidi: plaintext;
+    font-family: inherit; font-size: 14px; line-height: 1.6;
+    color: var(--muted);
+  }
+  .promptbox.open pre { max-height: none; }
+  .promptbox:not(.open)::after {
+    content: ""; position: absolute; inset-inline: 0; bottom: 44px; height: 64px;
+    background: linear-gradient(to bottom, transparent, var(--code-bg));
+    pointer-events: none;
+  }
+  .more {
+    display: block; width: 100%;
+    border: 0; border-top: 1px solid var(--line);
+    background: var(--code-bg); color: var(--ink);
+    font-family: inherit; font-size: 15px; font-weight: 500;
+    padding: 11px; cursor: pointer;
+  }
+  section { margin-top: 44px; }
+  h2 { font-size: 23px; font-weight: 700; margin: 0 0 16px; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+  }
+
+  .what { display: grid; gap: 12px; }
+  .what .row { display: flex; gap: 14px; align-items: flex-start; }
+  .what .tag {
+    flex: none; min-width: 64px; text-align: center;
+    font-size: 13px; font-weight: 500;
+    color: var(--muted); border: 1px solid var(--line);
+    border-radius: 8px; padding: 2px 8px; margin-top: 3px;
+  }
+  .what p { margin: 0; }
+  .arrow { color: var(--accent); font-weight: 700; text-align: center; margin: -2px 0; }
+
+  ol.steps { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; counter-reset: s; }
+  ol.steps li {
+    counter-increment: s;
+    position: relative;
+    padding: 18px 20px 18px 20px;
+    padding-inline-start: 64px;
+  }
+  ol.steps li::before {
+    content: counter(s);
+    position: absolute; inset-inline-start: 18px; top: 18px;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--accent); color: var(--accent-ink);
+    display: grid; place-items: center;
+    font-weight: 700; font-size: 16px;
+  }
+  ol.steps strong { display: block; font-size: 18px; margin-bottom: 4px; }
+  ol.steps p { margin: 0; color: var(--muted); }
+  .ui {
+    direction: ltr; unicode-bidi: isolate;
+    font-weight: 500; color: var(--ink);
+    background: var(--code-bg); border-radius: 6px; padding: 1px 7px;
+    white-space: nowrap;
+  }
+
+  .copybox { position: relative; margin-top: 12px; }
+  .copybox pre {
+    margin: 0;
+    background: var(--code-bg);
+    border-radius: 12px;
+    padding: 16px; padding-inline-start: 16px; padding-bottom: 52px;
+    white-space: pre-wrap; word-break: break-word;
+    font-family: inherit; font-size: 16px; color: var(--ink);
+  }
+  .copybox pre.ltr { direction: ltr; text-align: left; font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 14px; }
+  .copy {
+    position: absolute; bottom: 10px; inset-inline-end: 10px;
+    font-family: inherit; font-size: 14px; font-weight: 500;
+    border: 1px solid var(--line); background: var(--card); color: var(--ink);
+    border-radius: 8px; padding: 6px 12px; cursor: pointer;
+  }
+  .copy.done { color: var(--accent); border-color: var(--accent); }
+
+  .note {
+    border-inline-start: 3px solid var(--accent);
+    background: var(--accent-soft);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 15px;
+    margin-top: 16px;
+  }
+  .note p { margin: 0; }
+
+  details { margin-top: 0; }
+  summary {
+    cursor: pointer; font-weight: 500; font-size: 18px;
+    list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary .chev { transition: transform .15s ease; color: var(--muted); }
+  details[open] summary .chev { transform: rotate(180deg); }
+  details .body { color: var(--muted); margin-top: 10px; }
+  details .body p { margin: 0 0 8px; }
+
+  footer { margin-top: 48px; text-align: center; color: var(--muted); font-size: 14px; }
+</style>
+</head>
+<body>
+<main>
+
+  <a class="home" href="/">TAMAR DOBRIN | <span class="ai">AI</span></a>
+
+  <h1>הסקיל שלי לפרומפטים של <span class="en">Seedance</span></h1>
+  <p class="lead">כותבים ל-Claude רעיון לסרטון, ומקבלים פרומפט מסודר ל-Seedance 2.5 שמוכן להדבקה ב-Higgsfield.</p>
+
+  <button class="download" type="button" id="copyMain">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>
+    <span>העתקת הפרומפט</span>
+  </button>
+  <p class="under">מדביקים אותו בשיחה חדשה עם Claude, והוא בונה לכם את הסקיל.</p>
+
+  <div class="promptbox" id="pbox">
+    <pre id="prompt">תיצור לי סקיל (Skill) חדש בשם seedance-prompt.
+התוכן של הסקיל הוא הטקסט שמתחת לקו, כמו שהוא, בתור קובץ SKILL.md. אל תשנה ואל תקצר אותו.
+כשתסיים, תן לי לשמור את הסקיל אצלי כדי שאוכל להשתמש בו בכל שיחה.
+אם אין לך אפשרות ליצור סקילים בחשבון שלי, תגיד לי, ותסביר לי איך לשמור את ההוראות האלה כהוראות של פרויקט (Project) במקום.
+
+----------
+
+---
+name: &quot;seedance-prompt&quot;
+description: &quot;Turn a rough video idea (Hebrew or English) into a complete, structured Seedance 2.5 prompt ready to paste into Higgsfield.&quot;
+---
+
+# Seedance 2.5 Prompt Builder
+
+Take the user&#x27;s video idea, however rough, and return ONE production-ready Seedance 2.5 prompt, written in English, in a single copyable code block.
+
+## Step 1: Extract or default the essentials
+
+Pull these from the idea. Ask only if something critical is missing AND there is no sensible default (max 2 short questions, in one message). Otherwise use the defaults and list them under &quot;Assumptions&quot;.
+
+| Field | Default |
+|---|---|
+| Duration | 5s for tests, 10-15s for real content (max 30s) |
+| Aspect ratio | 9:16 (TikTok / Reels) |
+| Number of shots | 1 shot per ~3-5 seconds |
+| Style | Clean, modern, natural color, soft film grain |
+| Audio | Ambience + foley, no music, no dialogue |
+| References | None, unless the user mentions uploading images/video/audio |
+
+If the idea is in Hebrew, understand it in Hebrew but write the prompt in English (the model follows English best).
+
+## Step 2: Write the prompt in this exact section order
+
+One continuous block, each section labeled in caps. Never skip a section; skipped sections produce predictable failures (e.g. no CAMERA = random movement).
+
+1. **GLOBAL STYLE**: genre, look, color grade, film stock/grain, aspect ratio, shutter feel. End with global exclusions (e.g. &quot;No text overlays. No slow motion.&quot;).
+2. **SCENE**: one-line logline: who does what, where, with what mood.
+3. **CHARACTERS**: each character named (e.g. &quot;Maya&quot;) with age range, build, hair, wardrobe. Reuse the exact same name everywhere after.
+4. **LOCATION**: space, props, time of day. Kept separate from characters.
+5. **FIRST FRAME AND BLOCKING**: exact starting positions (e.g. &quot;Maya at x 40%, y 60%, facing camera-left&quot;).
+6. **SHOT-BY-SHOT**: `SHOT 1 (0-4s): shot type, action, one primary change, end state.` Separate shots with `HARD CUT.` Time ranges consecutive, non-overlapping, covering the full duration.
+7. **CAMERA**: per shot: framing, lens/focal length, height, movement (dolly push-in, locked tripod, slow orbit, handheld).
+8. **PHYSICS**: only what moves: hair, fabric, liquid, smoke, particles.
+9. **LIGHTING**: motivated source, direction, quality, color temperature.
+10. **AUDIO**: use brackets: `(music)`, `&lt;sound effects&gt;`, `{dialogue}`. End with exclusions (&quot;No music.&quot; / &quot;No dialogue.&quot;).
+
+## Rules that prevent common failures
+
+- **One action per time range.** Never pack several actions into a second. Timestamps are a pacing budget, not frame-accurate.
+- **Show, don&#x27;t imply speech.** Never put quoted thoughts in action text (&quot;a look that says &#x27;really?&#x27;&quot;); the model will voice it. Describe visible behavior (&quot;eyebrows lift, she holds the stare&quot;).
+- **Exclusions as separate sentences.** Write &quot;Do not show a logo.&quot; not &quot;a shirt without a logo.&quot; The model is bad at subtraction.
+- **On-screen text is unreliable.** Avoid readable signs, UI text or subtitles in the prompt; add them in editing. Mention this in Notes if the idea depends on text.
+- **Keep it concrete.** No vague words like &quot;epic&quot;, &quot;beautiful&quot;, &quot;cinematic&quot; without saying what makes it so (lens, light, movement).
+
+## References (only if the user uploads material)
+
+One role sentence per material, each with its own exclusion:
+
+- `@Image 1 defines Maya&#x27;s face, hair and build. Do not use the background or clothing from the image.`
+- `@Video 1 defines the camera movement and pacing only. Do not use the people or location in the video.`
+- `@Audio 1 defines Maya&#x27;s voice tone. Do not use the words spoken in the audio.`
+
+If several images show one subject, say so: &quot;@Images 1-3 all define one character, Maya.&quot; Never map several images to several characters in one sentence. Stay within ~1-8 image subjects for stability.
+
+## Dialogue
+
+Default to no dialogue. If the user wants speech:
+
+- Declare the language before the line: `Dialogue language: natural Israeli Hebrew. Maya says: {...}`
+- Keep lines short (one sentence per ~3s).
+- For Hebrew, add a Note: Hebrew lip-sync and pronunciation may be unreliable; test with a 5s clip first, or plan a voiceover in editing instead.
+
+## Output format
+
+Return exactly this, nothing more:
+
+**Settings:** duration, aspect ratio, mode (text-to-video / image-to-video / references)
+
+```
+[the full prompt]
+```
+
+**Assumptions:** bullet list of defaults you chose (only if any).
+
+**Notes:** 1-3 bullets max: the riskiest part of this prompt and what to tweak first if the result is off.
+
+Do not offer multiple prompt variants unless asked. If the user asks for iteration after a generation, ask what went wrong (or read their description) and change only the section responsible.
+</pre>
+    <button class="more" type="button" id="more">להצגת כל הפרומפט</button>
+  </div>
+
+  <section>
+    <h2>איך מתקינים</h2>
+    <ol class="steps">
+      <li class="card">
+        <strong>מעתיקים את הפרומפט</strong>
+        <p>בכפתור למעלה. הוא מעתיק את כל הטקסט, גם את החלק שלא רואים.</p>
+      </li>
+      <li class="card">
+        <strong>מדביקים בשיחה חדשה עם Claude</strong>
+        <p>ב-claude.ai או באפליקציה, פותחים שיחה חדשה, מדביקים ושולחים.</p>
+      </li>
+      <li class="card">
+        <strong>שומרים את הסקיל</strong>
+        <p>Claude בונה את הסקיל ומציע לשמור אותו. לוחצים לשמור, וזהו: מעכשיו הוא זמין לכם בכל שיחה.</p>
+      </li>
+    </ol>
+    <div class="note"><p>כדי ש-Claude יוכל לבנות סקיל, צריך שהרצת קוד תהיה מופעלת: <span class="ui">Settings</span> ← <span class="ui">Capabilities</span> ← <span class="ui">Code execution</span>. אם הוא אומר שהוא לא יכול, ראו בשאלות למטה.</p></div>
+  </section>
+
+  <section>
+    <h2>איך משתמשים</h2>
+    <p style="margin:0">פותחים שיחה חדשה עם Claude וכותבים משהו כזה:</p>
+    <div class="copybox">
+      <pre id="ex">תכתוב לי פרומפט ל-Seedance לסרטון של 10 שניות: חתולה אפורה יושבת על ספה ומסתכלת במבט שיפוטי על בקבוק וויסקי</pre>
+      <button class="copy" data-target="ex" type="button">העתקה</button>
+    </div>
+    <p style="color:var(--muted);margin-top:12px">מעתיקים את הפרומפט שמתקבל, מדביקים ב-Higgsfield, בוחרים את ההגדרות שהוא כתב, ומג'נרטים. אם משהו יצא לא טוב, מספרים ל-Claude מה השתבש והוא יתקן רק את החלק הרלוונטי.</p>
+  </section>
+
+  <section>
+    <h2>שאלות</h2>
+    <div class="card" style="display:grid;gap:18px">
+      <details>
+        <summary>זה עולה כסף? <span class="chev" aria-hidden="true">⌄</span></summary>
+        <div class="body"><p>הפרומפט חינמי. מה שעולה כסף זה הג'נרוט ב-Higgsfield עצמו (בסרטון אני מראה כמה).</p></div>
+      </details>
+      <details>
+        <summary>צריך לדעת אנגלית? <span class="chev" aria-hidden="true">⌄</span></summary>
+        <div class="body"><p>לא. כותבים את הרעיון בעברית, והוא כותב את הפרומפט באנגלית כי המודל עובד הכי טוב ככה.</p></div>
+      </details>
+      <details>
+        <summary>Claude אומר שהוא לא יכול ליצור סקיל <span class="chev" aria-hidden="true">⌄</span></summary>
+        <div class="body"><p>קודם בודקים שהרצת קוד מופעלת בהגדרות (ראו למעלה). אם עדיין לא, יש דרך שעובדת בכל חשבון: פותחים ב-Claude פרויקט חדש (Project), ומדביקים את אותו פרומפט בהוראות של הפרויקט. כל שיחה בתוך הפרויקט תעבוד בדיוק כמו הסקיל.</p></div>
+      </details>
+    </div>
+  </section>
+
+  <footer>נהנים מהסקיל? ספרו לי מה יצרתם איתו 🎬</footer>
+
+</main>
+<script>
+  function copyText(text, onDone) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(onDone, function () { fallback(); });
+    } else { fallback(); }
+    function fallback() {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); onDone(); } catch (e) {}
+      document.body.removeChild(ta);
+    }
+  }
+  var main = document.getElementById("copyMain");
+  main.addEventListener("click", function () {
+    copyText(document.getElementById("prompt").textContent, function () {
+      var label = main.querySelector("span");
+      label.textContent = "הועתק! עכשיו מדביקים ב-Claude";
+      setTimeout(function () { label.textContent = "העתקת הפרומפט"; }, 2600);
+    });
+  });
+  var box = document.getElementById("pbox"), more = document.getElementById("more");
+  more.addEventListener("click", function () {
+    var open = box.classList.toggle("open");
+    more.textContent = open ? "להסתרת הפרומפט" : "להצגת כל הפרומפט";
+  });
+  document.querySelectorAll(".copy").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var text = document.getElementById(btn.dataset.target).textContent;
+      var done = function () {
+        btn.textContent = "הועתק ✓";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "העתקה"; btn.classList.remove("done"); }, 1800);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, function () {});
+      } else {
+        var ta = document.createElement("textarea");
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        try { document.execCommand("copy"); done(); } catch (e) {}
+        document.body.removeChild(ta);
+      }
+    });
+  });
+</script>
+</body>
+</html>
